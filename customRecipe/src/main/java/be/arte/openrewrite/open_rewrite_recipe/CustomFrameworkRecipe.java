@@ -36,5 +36,25 @@ public class CustomFrameworkRecipe extends Recipe
 	private static class AnnotationApplicationScopedAddVisitor extends JavaIsoVisitor<ExecutionContext>
 	{
 
+		@Override
+		public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx)
+		{
+			if (classDecl.getBody() != null)
+			{
+				if(migrationDetected(classDecl)){
+					appliMigration(classDecl);
+				}
+			}
+			return super.visitClassDeclaration(classDecl, ctx);
+		}
+
+		private void appliMigration(J.ClassDeclaration classDecl) {
+
+		}
+
+		private boolean migrationDetected(J.ClassDeclaration classDecl) {
+			return false;
+		}
+
 	}
 }

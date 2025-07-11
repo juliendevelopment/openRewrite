@@ -33,13 +33,27 @@ class CustomFrameworkTest implements RewriteTest {
 	}
 
 	@Test
-	void testCase01() throws IOException, URISyntaxException {
+	void update_framework() throws IOException, URISyntaxException {
 		rewriteRun(java(
 				getSource("/Before.java"),
 				getSource("/After.java")
 		));
-
 	}
 
+	@Test
+	void no_change() throws IOException, URISyntaxException {
+		rewriteRun(
+				java("""
+							 	package be.arte.openrewrite;
+							 
+							 	class FooBar {
+							 	    public String hello() {
+							 	        return "Hello from be.arte.openrewrite.FooBar!";
+							 	    }
+							 	}
+							 """
+				)
+		);
+	}
 
 }
