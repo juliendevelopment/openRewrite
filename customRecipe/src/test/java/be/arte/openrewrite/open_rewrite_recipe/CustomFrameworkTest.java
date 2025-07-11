@@ -23,20 +23,14 @@ class CustomFrameworkTest implements RewriteTest {
 	}
 
 	private String getSource(String path) throws IOException, URISyntaxException {
-		try (InputStream inputStream = Files.newInputStream(Paths.get(path))) {
-			return new BufferedReader(new InputStreamReader(inputStream))
-					.lines()
-					.collect(Collectors.joining("\n"));
-		} catch (IOException e) {
-			return null;
-		}
+		return new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(path).toURI())));
 	}
 
 	@Test
 	void update_framework() throws IOException, URISyntaxException {
 		rewriteRun(java(
-				getSource("/Before.java"),
-				getSource("/After.java")
+				getSource("Before.java"),
+				getSource("After.java")
 		));
 	}
 

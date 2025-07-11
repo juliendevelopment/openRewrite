@@ -1,5 +1,3 @@
-package be.arte.openrewrite.open_rewrite_recipe.customRecipe.object;
-
 import javax.enterprise.context.ApplicationScoped;
 
 import be.arte.openrewrite.open_rewrite_recipe.class_exemple.HibernateMetaModelCache;
