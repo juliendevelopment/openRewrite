@@ -1,15 +1,10 @@
 package be.arte.openrewrite.open_rewrite_recipe;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.NlsRewrite;
 import org.openrewrite.Recipe;
 import org.openrewrite.java.JavaIsoVisitor;
-import org.openrewrite.java.JavaParser;
-import org.openrewrite.java.JavaTemplate;
+import org.openrewrite.java.search.UsesType;
 import org.openrewrite.java.tree.J;
 
 public class CustomFrameworkRecipe extends Recipe
@@ -41,7 +36,7 @@ public class CustomFrameworkRecipe extends Recipe
 		{
 			if (classDecl.getBody() != null)
 			{
-				if(migrationDetected(classDecl)){
+				if(migrationDetected(classDecl, ctx)){
 					appliMigration(classDecl);
 				}
 			}
@@ -52,8 +47,8 @@ public class CustomFrameworkRecipe extends Recipe
 
 		}
 
-		private boolean migrationDetected(J.ClassDeclaration classDecl) {
-			return false;
+		private boolean migrationDetected(J.ClassDeclaration classDecl, ExecutionContext ctx) {
+			return new UsesType<>("be.arte.openrewrite.open_rewrite_recipe.class_exemple.Person", false).visit(classDecl, ctx) != classDecl;
 		}
 
 	}
