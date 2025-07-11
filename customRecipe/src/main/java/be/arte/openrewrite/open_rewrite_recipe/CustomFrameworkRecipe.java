@@ -4,8 +4,11 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.NlsRewrite;
 import org.openrewrite.Recipe;
 import org.openrewrite.java.JavaIsoVisitor;
+import org.openrewrite.java.JavaTemplate;
 import org.openrewrite.java.search.UsesType;
 import org.openrewrite.java.tree.J;
+
+import java.util.Collections;
 
 public class CustomFrameworkRecipe extends Recipe
 {
@@ -37,14 +40,14 @@ public class CustomFrameworkRecipe extends Recipe
 			if (classDecl.getBody() != null)
 			{
 				if(migrationDetected(classDecl, ctx)){
-					appliMigration(classDecl);
+					classDecl = appliMigration(classDecl, ctx);
 				}
 			}
 			return super.visitClassDeclaration(classDecl, ctx);
 		}
 
-		private void appliMigration(J.ClassDeclaration classDecl) {
-
+		private J.ClassDeclaration appliMigration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
+			return (J.ClassDeclaration) new UpdateClassVisitor().visit(classDecl, ctx);
 		}
 
 		private boolean migrationDetected(J.ClassDeclaration classDecl, ExecutionContext ctx) {
@@ -52,4 +55,26 @@ public class CustomFrameworkRecipe extends Recipe
 		}
 
 	}
+
+	private static class UpdateClassVisitor extends JavaIsoVisitor<ExecutionContext> {
+		private final JavaTemplate template = JavaTemplate.builder("@Inject private SignaleticApi signaleticApi;").build();
+
+		@Override
+		public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext executionContext) {
+			classDecl = (J.ClassDeclaration) super.visitClassDeclaration(classDecl, executionContext);
+			classDecl = classDecl.withBody(classDecl.getBody().withStatements(template.apply(getCursor(), classDecl.getBody().getCoordinates().firstStatement())));
+			return classDecl;
+		}
+
+		@Override
+		public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
+			method = super.visitMethodInvocation(method, executionContext);
+			if (method.getMethodType() != null && method.getMethodType().getName().equals("getModelRoot")) {
+				JavaTemplate template = JavaTemplate.builder("signaleticApi.getSignaletic(#{any(long)})").build();
+				return template.apply(getCursor(), method.getCoordinates().replace(), method.getArguments().get(1));
+			}
+			return method;
+		}
+	}
 }
+
