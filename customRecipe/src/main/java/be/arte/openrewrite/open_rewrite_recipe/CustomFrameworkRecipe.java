@@ -28,24 +28,50 @@ public class CustomFrameworkRecipe extends Recipe {
 
 
 		@Override
-		public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
-			if (classDecl.getBody() != null) {
-				if (isUsingLegacyFramework(classDecl, ctx)) {
-					classDecl = appliMigration(classDecl, ctx);
-				}
-			}
+        public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
+            J.ClassDeclaration c = super.visitClassDeclaration(classDecl, ctx);
+            if (isUsingLegacyFramework(c, ctx)) {
+                c = addInjectOfService(c);
+                maybeAddImport("javax.inject.Inject");
+                maybeAddImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.SignaleticApi");
+                maybeAddImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.Signaletic");
+                maybeRemoveImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.HibernateMetaModelCache");
+                maybeRemoveImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.IntegratedDossier");
+            }
+            return c;
+        }
 
-			System.out.println(classDecl.printTrimmed(getCursor()));
-			return classDecl;
-		}
+        @Override
+        public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method, ExecutionContext ctx) {
+            J.MethodDeclaration m = super.visitMethodDeclaration(method, ctx);
 
-		private J.ClassDeclaration appliMigration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
-			classDecl = addInjectOfService(classDecl);
+            if (m.getBody() == null) {
+                return m;
+            }
 
+            boolean needsMigration = m.getBody().getStatements().stream()
+                    .anyMatch(statement -> statement.print(getCursor()).contains("HibernateMetaModelCache"));
 
+            if (needsMigration) {
+                JavaTemplate newBodyTemplate = JavaTemplate.builder(
+                                "{\n" +
+                                "    Signaletic signaletic = signaleticApi.getSignaletic(#{any(long)});\n" +
+                                "    return signaletic.getLastName();\n" +
+                                "}\n"
+                        )
+                        .imports("be.arte.openrewrite.open_rewrite_recipe.class_exemple.Signaletic")
+                        .build();
 
-			return classDecl;
-		}
+                m = newBodyTemplate.apply(
+                            getCursor(),
+                            m.getBody().getCoordinates().replace(),
+                            m.getParameters().get(0)
+                    );
+            }
+			J.CompilationUnit cu = getCursor().firstEnclosing(J.CompilationUnit.class);
+			System.out.println();
+			return m;
+        }
 
 		private J.ClassDeclaration addInjectOfService(J.ClassDeclaration classDecl) {
 			JavaTemplate template = JavaTemplate.builder("\t@Inject\n" +
