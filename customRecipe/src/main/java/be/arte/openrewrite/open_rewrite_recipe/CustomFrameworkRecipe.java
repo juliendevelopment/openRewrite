@@ -47,6 +47,10 @@ public class CustomFrameworkRecipe extends Recipe
 		}
 
 		private J.ClassDeclaration appliMigration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
+
+			// Remove old imports
+			maybeRemoveImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.HibernateMetaModelCache");
+			maybeRemoveImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.IntegratedDossier");
 			return (J.ClassDeclaration) new UpdateClassVisitor().visit(classDecl, ctx);
 		}
 

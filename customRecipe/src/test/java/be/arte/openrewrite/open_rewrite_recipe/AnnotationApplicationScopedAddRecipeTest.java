@@ -22,7 +22,7 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
 							import javax.inject.Inject;
 
 							@Deprecated
@@ -35,7 +35,7 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
 							
 							import javax.enterprise.context.ApplicationScoped;
 							import javax.inject.Inject;
@@ -59,7 +59,7 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
 							import javax.inject.Inject;
 
 							class FooBar {
@@ -71,7 +71,7 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
 							
 							import javax.enterprise.context.ApplicationScoped;
 							import javax.inject.Inject;
@@ -94,7 +94,7 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
 							import javax.inject.Inject;
 							import javax.management.MXBean;
 				
@@ -109,7 +109,7 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
 							
 							import javax.enterprise.context.ApplicationScoped;
 							import javax.inject.Inject;
@@ -135,8 +135,8 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Foo;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Foo;
 							import javax.inject.Inject;
 							import javax.management.MXBean;
 				
@@ -152,8 +152,8 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Foo;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Foo;
 							
 							import javax.enterprise.context.ApplicationScoped;
 							import javax.inject.Inject;
@@ -180,7 +180,7 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
 							
 							import javax.enterprise.context.ApplicationScoped;
 							import javax.inject.Inject;
@@ -206,7 +206,7 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
 							
 							import javax.inject.Inject;
 							import javax.management.MXBean;
@@ -229,7 +229,7 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
 							
 							import javax.ejb.EJB;
 							import javax.inject.Inject;
@@ -255,7 +255,7 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
 							
 							import javax.ejb.LocalHome;
 							import javax.inject.Inject;
@@ -278,7 +278,7 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
 							
 							import javax.enterprise.inject.Alternative;
 							import javax.inject.Inject;
@@ -300,7 +300,7 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 									package be.arte.openrewrite;
 								
-									import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
+									import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
 								
 									import javax.inject.Inject;
 								
@@ -320,7 +320,7 @@ public class AnnotationApplicationScopedAddRecipeTest implements RewriteTest
 						"""
 							package be.arte.openrewrite;
 							
-							import be.arte.openrewrite.open_rewrite_recipe.random_class.Bar;
+							import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Bar;
 							
 							import javax.enterprise.context.Dependent;
 							import javax.inject.Inject;
