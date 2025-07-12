@@ -26,52 +26,51 @@ public class CustomFrameworkRecipe extends Recipe {
 
 	private static class AnnotationApplicationScopedAddVisitor extends JavaIsoVisitor<ExecutionContext> {
 
+		@Override
+		public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
+			J.ClassDeclaration classDeclc = super.visitClassDeclaration(classDecl, ctx);
+			if (isUsingLegacyFramework(classDecl, ctx)) {
+				classDecl = addInjectOfService(classDecl);
+				maybeAddImport("javax.inject.Inject");
+				maybeAddImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.SignaleticApi");
+			}
+			return classDecl;
+		}
 
 		@Override
-        public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
-            J.ClassDeclaration c = super.visitClassDeclaration(classDecl, ctx);
-            if (isUsingLegacyFramework(c, ctx)) {
-                c = addInjectOfService(c);
-                maybeAddImport("javax.inject.Inject");
-                maybeAddImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.SignaleticApi");
-                maybeAddImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.Signaletic");
-                maybeRemoveImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.HibernateMetaModelCache");
-                maybeRemoveImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.IntegratedDossier");
-            }
-            return c;
-        }
+		public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method, ExecutionContext ctx) {
+			method = super.visitMethodDeclaration(method, ctx);
 
-        @Override
-        public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method, ExecutionContext ctx) {
-            J.MethodDeclaration m = super.visitMethodDeclaration(method, ctx);
+			if (method.getBody() == null) {
+				return method;
+			}
 
-            if (m.getBody() == null) {
-                return m;
-            }
+			boolean needsMigration = method.getBody().getStatements().stream()
+					.anyMatch(statement -> statement.print(getCursor()).contains("HibernateMetaModelCache"));
 
-            boolean needsMigration = m.getBody().getStatements().stream()
-                    .anyMatch(statement -> statement.print(getCursor()).contains("HibernateMetaModelCache"));
+			if (needsMigration) {
+				JavaTemplate newBodyTemplate = JavaTemplate.builder(
+								"{\n" +
+								"    Signaletic signaletic = signaleticApi.getSignaletic(#{any(long)});\n" +
+								"    return signaletic.getLastName();\n" +
+								"}\n"
+						)
+						.imports("be.arte.openrewrite.open_rewrite_recipe.class_exemple.Signaletic")
+						.build();
 
-            if (needsMigration) {
-                JavaTemplate newBodyTemplate = JavaTemplate.builder(
-                                "{\n" +
-                                "    Signaletic signaletic = signaleticApi.getSignaletic(#{any(long)});\n" +
-                                "    return signaletic.getLastName();\n" +
-                                "}\n"
-                        )
-                        .imports("be.arte.openrewrite.open_rewrite_recipe.class_exemple.Signaletic")
-                        .build();
+				method = newBodyTemplate.apply(
+						getCursor(),
+						method.getBody().getCoordinates().replace(),
+						method.getParameters().get(0)
+				);
 
-                m = newBodyTemplate.apply(
-                            getCursor(),
-                            m.getBody().getCoordinates().replace(),
-                            m.getParameters().get(0)
-                    );
-            }
-			J.CompilationUnit cu = getCursor().firstEnclosing(J.CompilationUnit.class);
-			System.out.println();
-			return m;
-        }
+				maybeAddImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.Signaletic");
+				maybeRemoveImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.HibernateMetaModelCache");
+				maybeRemoveImport("be.arte.openrewrite.open_rewrite_recipe.class_exemple.IntegratedDossier");
+
+			}
+			return method;
+		}
 
 		private J.ClassDeclaration addInjectOfService(J.ClassDeclaration classDecl) {
 			JavaTemplate template = JavaTemplate.builder("\t@Inject\n" +
@@ -94,6 +93,6 @@ public class CustomFrameworkRecipe extends Recipe {
 					});
 		}
 
-}
+	}
 }
 
