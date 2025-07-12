@@ -5,7 +5,7 @@ import be.arte.openrewrite.open_rewrite_recipe.class_exemple.Signaletic;
 import be.arte.openrewrite.open_rewrite_recipe.class_exemple.SignaleticApi;
 
 @ApplicationScoped
-public class After {
+public class Service {
 
 	@Inject
 	private SignaleticApi signaleticApi;
